@@ -15,12 +15,12 @@ Example usage:
 
             if (colorFrame != null && depthFrame != null && bodyIndexFrame != null)
             {
-                // Update the image source with the green-screen effect.
+                // Update the image source.
                 camera.Source = _backgroundRemovalTool.GreenScreen(colorFrame, depthFrame, bodyIndexFrame);
-
-                colorFrame.Dispose();
-                depthFrame.Dispose();
-                bodyIndexFrame.Dispose();
             }
+
+            colorFrame.Dispose();
+            depthFrame.Dispose();
+            bodyIndexFrame.Dispose();
         }
        
