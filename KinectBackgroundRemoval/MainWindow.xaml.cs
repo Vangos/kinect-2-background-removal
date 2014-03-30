@@ -24,7 +24,7 @@ namespace KinectBackgroundRemoval
         KinectSensor _sensor;
         MultiSourceFrameReader _reader;
 
-        // 1. Create a background removal tool.
+        // 1) Create a background removal tool.
         BackgroundRemovalTool _backgroundRemovalTool;
 
         public MainWindow()
@@ -42,11 +42,11 @@ namespace KinectBackgroundRemoval
             {
                 _sensor.Open();
 
+                // 2) Initialize the background removal tool.
+                _backgroundRemovalTool = new BackgroundRemovalTool(_sensor.CoordinateMapper);
+
                 _reader = _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth | FrameSourceTypes.BodyIndex);
                 _reader.MultiSourceFrameArrived += Reader_MultiSourceFrameArrived;
-
-                // 2. Initialize the background removal tool.
-                _backgroundRemovalTool = new BackgroundRemovalTool(_sensor.CoordinateMapper);
             }
         }
 
@@ -73,13 +73,13 @@ namespace KinectBackgroundRemoval
 
             if (colorFrame != null && depthFrame != null && bodyIndexFrame != null)
             {
-                // 3. Update the image source.
+                // 3) Update the image source.
                 camera.Source = _backgroundRemovalTool.GreenScreen(colorFrame, depthFrame, bodyIndexFrame);
-
-                colorFrame.Dispose();
-                depthFrame.Dispose();
-                bodyIndexFrame.Dispose();
             }
+
+            colorFrame.Dispose();
+            depthFrame.Dispose();
+            bodyIndexFrame.Dispose();
         }
     }
 }
