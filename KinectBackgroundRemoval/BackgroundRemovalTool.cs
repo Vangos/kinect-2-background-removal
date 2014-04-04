@@ -25,7 +25,7 @@ namespace KinectBackgroundRemoval
         /// <summary>
         /// Default format.
         /// </summary>
-        readonly PixelFormat FORMAT = PixelFormats.Bgr32;
+        readonly PixelFormat FORMAT = PixelFormats.Bgra32;
 
         /// <summary>
         /// Bytes per pixel.
@@ -54,7 +54,7 @@ namespace KinectBackgroundRemoval
         /// <summary>
         /// The RGB pixel values.
         /// </summary>
-        byte[] _pixels = null;
+        byte[] _colorData = null;
 
         /// <summary>
         /// The RGB pixel values used for the background removal (green-screen) effect.
@@ -94,9 +94,8 @@ namespace KinectBackgroundRemoval
         /// <param name="depthFrame">The specified depth frame.</param>
         /// <param name="colorFrame">The specified color frame.</param>
         /// <param name="bodyIndexFrame">The specified body index frame.</param>
-        /// <param name="backGroundColor">The specified background color.</param>
         /// <returns>The corresponding System.Windows.Media.Imaging.BitmapSource representation of image.</returns>
-        public BitmapSource GreenScreen(ColorFrame colorFrame, DepthFrame depthFrame, BodyIndexFrame bodyIndexFrame, Color backgroundColor)
+        public BitmapSource GreenScreen(ColorFrame colorFrame, DepthFrame depthFrame, BodyIndexFrame bodyIndexFrame)
         {
             int colorWidth = colorFrame.FrameDescription.Width;
             int colorHeight = colorFrame.FrameDescription.Height;
@@ -111,23 +110,23 @@ namespace KinectBackgroundRemoval
             {
                 _depthData = new ushort[depthWidth * depthHeight];
                 _bodyData = new byte[depthWidth * depthHeight];
-                _pixels = new byte[colorWidth * colorHeight * BYTES_PER_PIXEL];
+                _colorData = new byte[colorWidth * colorHeight * BYTES_PER_PIXEL];
                 _displayPixels = new byte[depthWidth * depthHeight * BYTES_PER_PIXEL];
                 _colorPoints = new ColorSpacePoint[depthWidth * depthHeight];
                 _bitmap = new WriteableBitmap(depthWidth, depthHeight, DPI, DPI, FORMAT, null);
             }
 
-            if (((depthWidth * depthHeight) == _depthData.Length) && ((colorWidth * colorHeight * BYTES_PER_PIXEL) == _pixels.Length) && ((bodyIndexWidth * bodyIndexHeight) == _bodyData.Length))
+            if (((depthWidth * depthHeight) == _depthData.Length) && ((colorWidth * colorHeight * BYTES_PER_PIXEL) == _colorData.Length) && ((bodyIndexWidth * bodyIndexHeight) == _bodyData.Length))
             {
                 depthFrame.CopyFrameDataToArray(_depthData);
 
                 if (colorFrame.RawColorImageFormat == ColorImageFormat.Bgra)
                 {
-                    colorFrame.CopyRawFrameDataToArray(_pixels);
+                    colorFrame.CopyRawFrameDataToArray(_colorData);
                 }
                 else
                 {
-                    colorFrame.CopyConvertedFrameDataToArray(_pixels, ColorImageFormat.Bgra);
+                    colorFrame.CopyConvertedFrameDataToArray(_colorData, ColorImageFormat.Bgra);
                 }
 
                 bodyIndexFrame.CopyFrameDataToArray(_bodyData);
@@ -141,7 +140,6 @@ namespace KinectBackgroundRemoval
                     for (int x = 0; x < depthWidth; ++x)
                     {
                         int depthIndex = (y * depthWidth) + x;
-                        int displayIndex = depthIndex * BYTES_PER_PIXEL;
 
                         byte player = _bodyData[depthIndex];
 
@@ -155,19 +153,13 @@ namespace KinectBackgroundRemoval
                             if ((colorX >= 0) && (colorX < colorWidth) && (colorY >= 0) && (colorY < colorHeight))
                             {
                                 int colorIndex = ((colorY * colorWidth) + colorX) * BYTES_PER_PIXEL;
+                                int displayIndex = depthIndex * BYTES_PER_PIXEL;
 
-                                _displayPixels[displayIndex + 0] = _pixels[colorIndex];
-                                _displayPixels[displayIndex + 1] = _pixels[colorIndex + 1];
-                                _displayPixels[displayIndex + 2] = _pixels[colorIndex + 2];
+                                _displayPixels[displayIndex + 0] = _colorData[colorIndex];
+                                _displayPixels[displayIndex + 1] = _colorData[colorIndex + 1];
+                                _displayPixels[displayIndex + 2] = _colorData[colorIndex + 2];
                                 _displayPixels[displayIndex + 3] = 0xff;
                             }
-                        }
-                        else
-                        {
-                            _displayPixels[displayIndex + 0] = backgroundColor.R;
-                            _displayPixels[displayIndex + 1] = backgroundColor.G;
-                            _displayPixels[displayIndex + 2] = backgroundColor.B;
-                            _displayPixels[displayIndex + 3] = backgroundColor.A;
                         }
                     }
                 }
@@ -181,18 +173,6 @@ namespace KinectBackgroundRemoval
             }
 
             return _bitmap;
-        }
-
-        /// <summary>
-        /// Converts a depth frame to the corresponding System.Windows.Media.Imaging.BitmapSource and removes the background (green-screen effect).
-        /// </summary>
-        /// <param name="depthFrame">The specified depth frame.</param>
-        /// <param name="colorFrame">The specified color frame.</param>
-        /// <param name="bodyIndexFrame">The specified body index frame.</param>
-        /// <returns>The corresponding System.Windows.Media.Imaging.BitmapSource representation of image.</returns>
-        public BitmapSource GreenScreen(ColorFrame colorFrame, DepthFrame depthFrame, BodyIndexFrame bodyIndexFrame)
-        {
-            return GreenScreen(colorFrame, depthFrame, bodyIndexFrame, Colors.Transparent);
         }
 
         #endregion

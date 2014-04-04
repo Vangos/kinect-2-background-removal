@@ -1,8 +1,14 @@
 ﻿<Window x:Class="KinectBackgroundRemoval.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Kinect 2 Background Removal" Height="720" Width="1080" Loaded="Window_Loaded" Closed="Window_Closed">
+        Title="Kinect 2 Background Removal" Height="720" Width="1080" Loaded="Window_Loaded" Closed="Window_Closed" WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="/Soccer.jpg" />
+            <!--<SolidColorBrush Color="Green" />-->
+            <!--<SolidColorBrush Color="Red" />-->
+            <!--<SolidColorBrush Color="Transparent" />-->
+        </Grid.Background>
         <Image Name="camera" />
     </Grid>
 </Window>

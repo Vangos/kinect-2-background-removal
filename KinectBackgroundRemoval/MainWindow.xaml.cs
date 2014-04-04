@@ -77,9 +77,15 @@ namespace KinectBackgroundRemoval
                 camera.Source = _backgroundRemovalTool.GreenScreen(colorFrame, depthFrame, bodyIndexFrame);
             }
 
-            colorFrame.Dispose();
-            depthFrame.Dispose();
-            bodyIndexFrame.Dispose();
+            try
+            {
+                colorFrame.Dispose();
+                depthFrame.Dispose();
+                bodyIndexFrame.Dispose();
+            }
+            catch
+            {
+            }
         }
     }
 }
