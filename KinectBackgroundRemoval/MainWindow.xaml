@@ -5,6 +5,7 @@
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Soccer.jpg" />
+            <!-- USE ANY SOLID COLOR, GRADIENT OR IMAGE-->
             <!--<SolidColorBrush Color="Green" />-->
             <!--<SolidColorBrush Color="Red" />-->
             <!--<SolidColorBrush Color="Transparent" />-->
