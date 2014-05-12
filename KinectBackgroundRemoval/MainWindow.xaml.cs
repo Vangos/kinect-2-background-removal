@@ -34,8 +34,6 @@ namespace KinectBackgroundRemoval
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Process.Start(@"C:\Windows\System32\KinectService.exe");
-
             _sensor = KinectSensor.Default;
 
             if (_sensor != null)
@@ -67,25 +65,26 @@ namespace KinectBackgroundRemoval
         {
             var reference = e.FrameReference.AcquireFrame();
 
-            var colorFrame = reference.ColorFrameReference.AcquireFrame();
-            var depthFrame = reference.DepthFrameReference.AcquireFrame();
-            var bodyIndexFrame = reference.BodyIndexFrameReference.AcquireFrame();
-
-            if (colorFrame != null && depthFrame != null && bodyIndexFrame != null)
+            using (var colorFrame = reference.ColorFrameReference.AcquireFrame())
+            using (var depthFrame = reference.DepthFrameReference.AcquireFrame())
+            using (var bodyIndexFrame = reference.BodyIndexFrameReference.AcquireFrame())
             {
-                // 3) Update the image source.
-                camera.Source = _backgroundRemovalTool.GreenScreen(colorFrame, depthFrame, bodyIndexFrame);
+                if (colorFrame != null && depthFrame != null && bodyIndexFrame != null)
+                {
+                    // 3) Update the image source.
+                    camera.Source = _backgroundRemovalTool.GreenScreen(colorFrame, depthFrame, bodyIndexFrame);
+                }
             }
 
-            try
-            {
-                colorFrame.Dispose();
-                depthFrame.Dispose();
-                bodyIndexFrame.Dispose();
-            }
-            catch
-            {
-            }
+            //try
+            //{
+            //    colorFrame.Dispose();
+            //    depthFrame.Dispose();
+            //    bodyIndexFrame.Dispose();
+            //}
+            //catch
+            //{
+            //}
         }
     }
 }
