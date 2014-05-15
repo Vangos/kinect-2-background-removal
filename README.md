@@ -3,9 +3,13 @@ Kinect Background Removal (Kinect version 2)
 
 Background removal (aka "green-screen effect") using Kinect for Windows version 2.
 
-YouTube video: [youtube.com/watch?v=Hu6pDb6revs] (https://www.youtube.com/watch?v=Hu6pDb6revs)
+YouTube videos
+---
+- [Color & image backgrounds] (https://youtube.com/watch?v=Hu6pDb6revs)
+- [Video backgrounds] (https://youtube.com/watch?v=s3kD5OPEF0c)
 
-Example usage:
+Example usage
+---
 
         void Reader_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
         {
