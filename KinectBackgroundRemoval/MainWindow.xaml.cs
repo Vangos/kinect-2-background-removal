@@ -34,7 +34,7 @@ namespace KinectBackgroundRemoval
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _sensor = KinectSensor.Default;
+            _sensor = KinectSensor.GetDefault();
 
             if (_sensor != null)
             {
